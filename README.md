@@ -1,70 +1,50 @@
-# Starter Game Template
+# Basic Game Example
 
-This repository contains a starter World Engine project that you can use as a scaffold for your project.
+This is a port of the starter game template to cardinal V2.
 
-## Installing World CLI
+## Prerequisites
 
-To begin your development journey with World Engine, you install
-[World CLI](https://github.com/Argus-Labs/world-cli) a tool for creating, managing, and deploying World
-Engine projects.
+- Go 1.24 or later
+- NATS server with JetStream enabled
+- Docker and Kubernetes (for running with Tilt)
 
-Install the latest world-cli release by running:
+## Running the Game
 
-```bash
-curl https://install.world.dev/cli! | bash
-```
-
-### Docker
-
-Docker is used to make it easy to run the World Engine stack and its dependencies. If you don't already have Docker
-installed, you can find instructions for your platform here:
-
-[Installation instructions for Docker Desktop](https://docs.docker.com/compose/install/#scenario-one-install-docker-desktop)
-
-## Getting Started
-
-To use this template to start your own project, navigate to the directory where you want your project to live
-and run:
+1. Start the development environment using Tilt:
 
 ```bash
-world create
+tilt up
 ```
 
-You will be prompted for a game name. A copy of the starter-game-template will be created in the current directory.
-
-### Running Development Mode
-
-World Engine dev mode provides a fast and easy way to run and iterate on your game shard.
-
-To use it, navigate to your project directory and run
+2. Run the game server:
 
 ```bash
-world cardinal dev
+go run main.go
 ```
 
-### Running World Engine E2E
+## Testing the Game
 
-To run the World Engine stack end-to-end (i.e. in production and game engine integration), run:
+The example includes a test client that can send various game commands. The client automatically creates necessary JetStream streams and uses the correct message format.
 
+### Available Commands
+
+1. Create a new player:
 ```bash
-world cardinal start
+go run cmd/client/main.go create-player <nickname>
+
+# Example:
+go run cmd/client/main.go create-player player1
 ```
 
-This command will use the `world.toml` config specified in your root project directory to run both World Engine's
-Cardinal game shard and Nakama relayer (for game engine integration).
+2. Attack a player:
+```bash
+go run cmd/client/main.go attack-player <target> <damage>
 
-Make sure to set `CARDINAL_MODE="production"` in world.toml to run the stack in production mode and obtain the best performance.
+# Example:
+go run cmd/client/main.go attack-player player1 20
+```
 
-### Cardinal Editor
-
-The Cardinal Editor is a web-based companion app that makes game development of Cardinal easier. It allows you to inspect the state of Cardinal in real-time without any additional code.
-
-To access it, run `world cardinal start` or `world cardinal dev`
-
-Then, open the [Cardinal Editor](https://editor.world.dev) in a web browser.
-
-After you create some entities in your game, it will show up on the Cardinal Editor.
-
-## Developing Your Game
-
-For more details on how to create the game of your dream, visit the [World Engine documentation](https://world.dev)
+3. View game state (debug log):
+```bash
+go run cmd/client/main.go debug-log
+```
